@@ -1,0 +1,5 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ include "karpenter-over-provisioning.priorityClass.fullname" . }}
+value: {{ default -1 .Values.priorityClass.value }}

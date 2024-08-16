@@ -1,0 +1,30 @@
+# Default values for karpenter-over-provisioning.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  name: alpine:3.19
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+podLabels: {}
+
+nodeSelector:
+  nodepool: <nodepool-name>
+
+resources:
+  limits:
+    cpu: 6
+    memory: 4Gi
+  requests:
+    cpu: 6
+    memory: 4Gi
+
+# Priority Class Configuration
+priorityClass:
+  value: -1

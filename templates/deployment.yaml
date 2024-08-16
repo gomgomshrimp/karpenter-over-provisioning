@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "karpenter-over-provisioning.fullname" . }}
+  name: {{ include "karpenter-over-provisioning.fullname" . }}
+spec:
+  revisionHistoryLimit: 1
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "karpenter-over-provisioning.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "karpenter-over-provisioning.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      priorityClassName: {{ include "karpenter-over-provisioning.priorityClass.fullname" . }}
+      containers:
+      - image: "{{ .Values.image.name }}"
+        name: {{ include "karpenter-over-provisioning.fullname" . }}
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh","-c","sleep infinity"]
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
